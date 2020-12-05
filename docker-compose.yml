@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  django:
+    build: ./weather
+    command: ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+    volumes:
+      - ./weather:/app/weather
+    ports:
+      - "8000:8000"
