@@ -88,7 +88,7 @@
         </div>
 
         {% if data.cod %}
-        {% if data.cod != '404' %}
+        {% if data.cod == 200 %}
         <div class="row mb-3 mb-sm-3">
             <div class="col-md-6 offset-md-3">
                 <div class="weather">
@@ -134,11 +134,11 @@
         {% endif %}
         {% endif %}
         
-        {% if data.cod == '404' %}
+        {% if data.cod >= 400 %}
         <div class="row mb-3 mb-sm-3">
             <div class="col-md-6 offset-md-3">
                 <div class="alert alert-danger text-center" role="alert">
-                  {% trans "City not found! Please Enter another city." %}
+                  {{ data.msg }}
                 </div>
             </div>
         </div>

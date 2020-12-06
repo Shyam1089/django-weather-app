@@ -53,14 +53,14 @@ class ViewsTest(unittest.TestCase):
 
     def test_get_weather_data_negative(self):
         response = views.get_weather_data("DUMMY CITY", 'en')
-        expected_result = {'cod': '404', 'message': 'city not found'}
+        expected_result = {'cod': '404', 'msg': 'city not found'}
         self.assertEqual(response.keys(), expected_result.keys())
 
     @patch("cityweather.views.get_weather_data")
     @patch("cityweather.views.requests.post")
     @patch("cityweather.views.get_weather_data")
     def test_homepage(self, mock_get_weather_data, mock_request_post, mock_api_call):
-        mock_api_call.all.return_value = {'cod': '404', 'message': 'city not found'}
+        mock_api_call.all.return_value = {'cod': '404', 'msg': 'city not found'}
         mock_request_post.return_value =  self.mock_response(status=200, content='{"result": "true"}', method='POST')
         result = views.homepage(mock_request_post)
         self.assertEqual(result.status_code, 200)

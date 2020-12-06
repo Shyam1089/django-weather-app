@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-06 21:23+0530\n"
-"PO-Revision-Date: 2020-12-06 21:26+0530\n"
+"POT-Creation-Date: 2020-12-06 22:41+0530\n"
+"PO-Revision-Date: 2020-12-06 22:43+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -57,39 +57,47 @@ msgstr "Druck"
 msgid "Humidity"
 msgstr "Feuchtigkeit"
 
-#: cityweather/templates/cityweather/homepage.html:141
-msgid "City not found! Please Enter another city."
-msgstr "Stadt nicht gefunden! Bitte geben Sie eine andere Stadt ein."
+#: cityweather/views.py:31
+msgid "Internal Server Error! Please try later."
+msgstr "Interner Serverfehler! Bitte versuch es später."
 
-#: cityweather/views.py:42 cityweather/views.py:57
+#: cityweather/views.py:45
+msgid "City not found! Please enter another city."
+msgstr "Stadt nicht gefunden! Bitte geben sie eine andere Stadt ein."
+
+#: cityweather/views.py:48
+msgid "Network Error! Please try later."
+msgstr "Netzwerkfehler! Bitte versuch es später."
+
+#: cityweather/views.py:54 cityweather/views.py:69
 msgid "North"
 msgstr "Nordwest"
 
-#: cityweather/views.py:44
+#: cityweather/views.py:56
 msgid "North West"
 msgstr "Nordwest"
 
-#: cityweather/views.py:46
+#: cityweather/views.py:58
 msgid "West"
 msgstr "Westen"
 
-#: cityweather/views.py:48
+#: cityweather/views.py:60
 msgid "South West"
 msgstr "Südwesten"
 
-#: cityweather/views.py:50
+#: cityweather/views.py:62
 msgid "South"
 msgstr "Süden"
 
-#: cityweather/views.py:52
+#: cityweather/views.py:64
 msgid "South East"
 msgstr "Süd-Ost"
 
-#: cityweather/views.py:54
+#: cityweather/views.py:66
 msgid "East"
 msgstr "Osten"
 
-#: cityweather/views.py:56
+#: cityweather/views.py:68
 msgid "North East"
 msgstr "Nordosten"
 

@@ -16,27 +16,40 @@ def homepage(request):
             pass  # does nothing, just trigger the validation
         city = form.cleaned_data.get('search', "").lower()
         if city:
-            cached_data = cache.get(city, False)
-            if not cached_data:
-                weather_data = get_weather_data(city, request.LANGUAGE_CODE)
-                if weather_data.get('cod', "") != '404':
-                    weather_data.update(
-                        {"wind_direction": get_wind_direction(weather_data['wind']['deg'])})
-                    cache.add(city, weather_data)
-            else:
-                weather_data = cache.get(city)
+            try:
+                cached_data = cache.get(city, False)
+                if not cached_data:
+                    weather_data = get_weather_data(city, request.LANGUAGE_CODE)
+                    if str(weather_data.get('cod', "")) == '200':
+                        weather_data.update({
+                            "wind_direction": get_wind_direction(weather_data['wind']['deg'])
+                        })
+                        cache.add(city, weather_data)
+                else:
+                    weather_data = cache.get(city)
+            except:
+                weather_data.update({"cod":500, "msg":_("Internal Server Error! Please try later.")})
     else:
         form = InputForm()
+    print (weather_data)
     return render(request, 'cityweather/homepage.html', {'form': form, 'data': weather_data})
 
 
 def get_weather_data(city_name, lang):
     API_KEY = "8a7f5047848c86496d086cc4f1f243ba"
-    response = requests.get(f"http://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={API_KEY}&lang={lang}&units=metric")
-    return json.loads(response.content)
+    try:
+        response = requests.get(f"http://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={API_KEY}&lang={lang}&units=metric")
+        if response.status_code == 200:
+            return json.loads(response.content)
+        elif response.status_code == 404:
+            return {"cod":404, "msg":_("City not found! Please enter another city.")}
+    except Exception as e:
+        print (e)
+    return {"cod":500, "msg":_("Network Error! Please try later.")}
 
 
 def get_wind_direction(degree):
+    print (degree)
     if (degree > 337.5):
         return _('North')
     if (degree > 292.5):
