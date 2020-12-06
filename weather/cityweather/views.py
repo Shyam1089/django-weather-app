@@ -3,14 +3,9 @@ import json
 
 from django.shortcuts import render
 from django.http import HttpResponse
-from django import forms
-from django.utils.translation import gettext as _
+from .forms import InputForm
 from django.core.cache import cache
-
-
-class InputForm(forms.Form):
-    search = forms.CharField(label=_("Select City"),
-                             max_length=50, localize=True)
+from django.utils.translation import gettext as _
 
 
 def homepage(request):
@@ -23,7 +18,6 @@ def homepage(request):
         if city:
             cached_data = cache.get(city, False)
             if not cached_data:
-                print("calling API")
                 weather_data = get_weather_data(city, request.LANGUAGE_CODE)
                 if weather_data.get('cod', "") != '404':
                     weather_data.update(
@@ -44,19 +38,19 @@ def get_weather_data(city_name, lang):
 
 def get_wind_direction(degree):
     if (degree > 337.5):
-        return 'North'
+        return _('North')
     if (degree > 292.5):
-        return 'North West'
+        return _('North West')
     if(degree > 247.5):
-        return 'West'
+        return _('West')
     if(degree > 202.5):
-        return 'South West'
+        return _('South West')
     if(degree > 157.5):
-        return 'South'
+        return _('South')
     if(degree > 122.5):
-        return 'South East'
+        return _('South East')
     if(degree > 67.5):
-        return 'East'
+        return _('East')
     if(degree > 22.5):
-        return 'North East'
-    return 'North'
+        return _('North East')
+    return _('North')
