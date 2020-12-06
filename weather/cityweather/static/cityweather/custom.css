@@ -1,87 +1,83 @@
 body {
     /*padding-top: 20px;*/
     padding-bottom: 20px;
+    background-size: 1800px 900px;
+    background-repeat: no-repeat;
+    background-position: top;
+    background-attachment: fixed;
 }
 
 .navbar {
     margin-bottom: 20px;
-    background: green;
+    background: #6c0080;
 }
 
-.weather
-{
+a.navbar-brand{
+    color: white;
+}
+.weather{
     display: flex;
     flex-flow: column wrap;
     box-shadow: 0px 1px 10px 0px #cfcfcf;
     overflow: hidden;
 }
 
-.weather .current
-{
+.weather .current{
     display: flex;
     flex-flow: row wrap;
-    background-color: #2700ffa3;
+    background-color: #b1b1b17a;
     background-repeat: repeat-x;
     color: white;
     padding: 20px;
     text-shadow: 1px 1px #F68D2E;
 }
 
-.weather .current .info
-{
+.weather .current .info{
     display: flex;
     flex-flow: column wrap;
     justify-content: space-around;
     flex-grow: 2;
 }
 
-.weather .current .info .city
-{
+.weather .current .info .city{
     font-size: 26px;
 }
 
-.weather .current .info .temp
-{
+.weather .current .info .temp{
     font-size: 56px;
 }
 
-.weather .current .info .wind
-{
+.weather .current .info .wind{
     font-size: 24px;
 }
 
-.weather .current .icon
-{
+.weather .current .icon{
     text-align: center;
     font-size: 64px;
     flex-grow: 1;
 }
 
-.weather .extra
-{
+.weather .extra{
     display: flex;
     flex-flow: row nowrap;
+    background: white;
 }
 
-.weather .extra .day
-{
+.weather .extra .day{
     flex-grow: 1;
     text-align: center;
     cursor: pointer;
 }
 
-.weather .extra .day:hover
-{
+.weather .extra .day:hover{
     color: #fff;
-    background-color: green;
+    background-color: #6c0080;
 }
 
-.weather .extra .day h3
-{
+.weather .extra .day h3{
     text-transform: uppercase;
 }
 
-.weather .extra .day p
-{
+.weather .extra .day p{
     font-size: 28px;
 }

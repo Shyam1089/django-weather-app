@@ -1,5 +1,6 @@
 {% load widget_tweaks %}
 {% load static %}
+{% load i18n %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,123 +10,133 @@
         <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.1.0/css/flag-icon.min.css" rel="stylesheet">
         <link href="https://cdnjs.cloudflare.com/ajax/libs/weather-icons/2.0.10/css/weather-icons.min.css" rel="stylesheet" type="text/css" />
-
         <!-- jQuery and JS bundle w/ Popper.js -->
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
         <link href="{% static 'cityweather/custom.css' %}" rel="stylesheet">
         <title>City Weather</title>
     </head>
-    <body>
-        <header>
-            <nav class="navbar navbar-expand-lg navbar-dark pink scrolling-navbar">
-                <a class="navbar-brand" href="#">ACME WEATHER WEBSITE</a>
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample09" aria-controls="navbarsExample09" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarsExample09">
-                    <ul class="navbar-nav mr-auto">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="http://example.com" id="dropdown09" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span class="flag-icon flag-icon-us"> </span> English</a>
-                            <div class="dropdown-menu" aria-labelledby="dropdown09">
-                                <a class="dropdown-item" href="#fr"><span class="flag-icon flag-icon-fr"> </span>  French</a>
-                                <a class="dropdown-item" href="#it"><span class="flag-icon flag-icon-it"> </span>  Italian</a>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-            </nav>
-        </header>
-        <div class="container">
-            <form method="post" novalidate>
-                {% csrf_token %}
-                {% for hidden_field in form.hidden_fields %}
-                {{ hidden_field }}
-                {% endfor %}
-                {% if form.non_field_errors %}
-                <div class="alert alert-danger" role="alert">
-                    {% for error in form.non_field_errors %}
-                    {{ error }}
+    <body style="background-image: url('{% static "cityweather/body-pg.jpg"%}')";>
+    <header>
+        <div id="navbar-main">
+        <!-- Fixed navbar -->
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="#">DEMO WEATHER WEBSITE</a>
+                <ul class="nav navbar-nav navbar-right">
+                    <form action="{% url 'set_language' %}" method="post">{% csrf_token %}
+                        <input name="next" type="hidden" value="{{ redirect_to }}">
+                        <select name="language">
+                        {% get_current_language as LANGUAGE_CODE %}
+                        {% get_available_languages as LANGUAGES %}
+                        {% get_language_info_list for LANGUAGES as languages %}
+                        {% for language in languages %}
+                        <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                        {{ language.name_local }} ({{ language.code }})
+                        </option>
+                        {% endfor %}
+                        </select>
+                        <input type="submit" value="Go">
+                    </form>
+                </ul>
+            </div>
+        </div>
+    </header>
+    <div class="container-fluid">
+        <div class="row mb-3 mb-sm-3" >
+            <div class="col-md-6 offset-md-4">
+                <form method="post" novalidate class="form-inline">
+                    {% csrf_token %}
+                    {% for hidden_field in form.hidden_fields %}
+                    {{ hidden_field }}
                     {% endfor %}
-                </div>
-                {% endif %}
-                {% for field in form.visible_fields %}
-                <div class="form-group">
-                    {{ field.label_tag }}
-                    {% if form.is_bound %}
-                    {% if field.errors %}
-                    {% render_field field class="form-control is-invalid" %}
-                    {% for error in field.errors %}
-                    <div class="invalid-feedback">
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger" role="alert">
+                        {% for error in form.non_field_errors %}
                         {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    {% for field in form.visible_fields %}
+                    <div class="form-group">
+                        <!-- {{ field.label_tag }} -->
+                        {% if form.is_bound %}
+                        {% if field.errors %}
+                        {% render_field field class="form-control is-invalid" %}
+                        {% for error in field.errors %}
+                        <div class="invalid-feedback">
+                            {{ error }}
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        {% render_field field class="form-control is-valid" %}
+                        {% endif %}
+                        {% else %}
+                        {% render_field field class="form-control" %}
+                        {% endif %}
                     </div>
                     {% endfor %}
-                    {% else %}
-                    {% render_field field class="form-control is-valid" %}
-                    {% endif %}
-                    {% else %}
-                    {% render_field field class="form-control" %}
-                    {% endif %}
-                    {% if field.help_text %}
-                    <small class="form-text text-muted">{{ field.help_text }}</small>
-                    {% endif %}
-                </div>
-                {% endfor %}
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </form>
-
-            <!-- <form method="GET">
-                <div class="form-group">
-                    <label for="search">Select a City:</label>
-                    <input type="text" class="form-control" id="search">
-                </div>
-                <button type="submit" class="btn btn-primary">Submit</button>
+                    <button type="submit" class="btn btn-primary">{% trans "Get Current Weather" %}</button>
+                </form>
             </div>
-            </form>
-            <br/><br/>
+        </div>
 
-
-            {% for question in questions %}
-            <p>{{question}}</p>
-            {% endfor %} -->
-
-            <div class="row">
-        <div class="col-md-6 offset-md-3">
-            <div class="weather">
-                <div class="current">
-                    <div class="info">
-                        <div>&nbsp;</div>
-                        <div class="city"><small><small>CITY:</small></small> London</div>
-                        <div class="temp">67&deg; <small>C</small></div>
-                        <div class="wind"><small><small>WIND:</small></small> 22 km/h</div>
-                        <div>&nbsp;</div>
+        {% if data.cod %}
+        {% if data.cod != '404' %}
+        <div class="row mb-3 mb-sm-3">
+            <div class="col-md-6 offset-md-3">
+                <div class="weather">
+                    <div class="current">
+                        <div class="info">
+                            <div>&nbsp;</div>
+                            <div class="city"><small><small>{% trans "City" %}:</small></small> {{ data.name }}</div>
+                            <div class="temp">{{ data.main.temp }} &deg; <small>C</small></div>
+                            <div class="wind"><small><small>{% trans "Feels Like" %}:</small></small> {{ data.main.feels_like }} &deg;<small>C</small></div>
+                            <div class="wind"><small><small>{% trans "Description" %}:</small></small> {{ data.weather.0.description }}</div>
+                            <div class="wind"><small><small>{% trans "Wind" %}:</small></small> {{ data.wind.speed }} m/s, {{ data.wind_direction }}</div>
+                            <div>&nbsp;</div>
+                        </div>
+                        <div class="icon">
+                            <span><img src="http://openweathermap.org/img/wn/10d@4x.png"> </span>
+                        </div>
                     </div>
-                   <!--  <div class="icon">
-                        <span class="wi-barometer"></span>
-                    </div> -->
-                </div>
-                <div class="extra">
-                    <div class="day">
-                        <span><strong>Min Temp.</strong></span>
-                        <p><span class="wi wi-thermometer-exterior"></span></p>
+                    <div class="extra">
+                        <div class="day">
+                            <span><strong>{% trans "Min Temp." %}</strong></span>
+                            <p><span class="wi wi-thermometer-exterior"></span></p>
+                            <span><strong>{{ data.main.temp_min }} &deg; C</strong></span>
+                        </div>
+                        <div class="day">
+                            <span><strong>{% trans "Max Temp." %}</strong></span>
+                            <p><span class="wi wi-thermometer"></span></p>
+                            <span><strong>{{ data.main.temp_max }} &deg; C</strong></span>
+                        </div>
+                        <div class="day">
+                            <span><strong>{% trans "Pressure" %}</strong></span>
+                            <p><span class="wi wi-barometer"></span></p>
+                            <span><strong>{{ data.main.pressure }}</strong> hPa</span>
+                        </div>
+                        <div class="day">
+                            <span><strong>{% trans "Humidity" %}</strong></span>
+                            <p><span class="wi wi-humidity"></span></p>
+                            <span><strong>{{ data.main.humidity }} <span>&#37;</span></strong></span>
+                        </div>
                     </div>
-                    <div class="day">
-                        <span><strong>Max Temp.</strong></span>
-                        <p><span class="wi wi-thermometer"></span></p>
-                    </div>
-                    <div class="day">
-                        <span><strong>Pressure</strong></span>
-                        <p><span class="wi wi-barometer"></span></p>
-                    </div>
-                    <div class="day">
-                        <span><strong>Humidity</strong></span>
-                        <p><span class="wi wi-humidity"></span></p>
-                    </div>
-                    
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% endif %}
+        
+        {% if data.cod == '404' %}
+        <div class="row mb-3 mb-sm-3">
+            <div class="col-md-6 offset-md-3">
+                <div class="alert alert-danger text-center" role="alert">
+                  {% trans "City not found! Please Enter another city." %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
     </div>
-        </div>
     </body>
 </html>
