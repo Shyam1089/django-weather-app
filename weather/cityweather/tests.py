@@ -64,3 +64,13 @@ class ViewsTest(unittest.TestCase):
         mock_request_post.return_value =  self.mock_response(status=200, content='{"result": "true"}', method='POST')
         result = views.homepage(mock_request_post)
         self.assertEqual(result.status_code, 200)
+
+    def test_generate_cache_key(self):
+        response = views.generate_cache_key("new York", "en")
+        expected_result = "new york", "en-new-york"
+        self.assertEqual(response, expected_result)
+
+    def test_generate_cache_key_extra_spaces(self):
+        response = views.generate_cache_key("   New York   ", "en")
+        expected_result = "new york", "en-new-york"
+        self.assertEqual(response, expected_result)

@@ -14,26 +14,30 @@ def homepage(request):
         form = InputForm(request.POST)
         if form.is_valid():
             pass  # does nothing, just trigger the validation
-        city = form.cleaned_data.get('search', "").lower()
+        city = form.cleaned_data.get('search', "")
         if city:
             try:
-                cached_data = cache.get(city, False)
+                city, cache_key = generate_cache_key(city, request.LANGUAGE_CODE)
+                cached_data = cache.get(cache_key, False)
                 if not cached_data:
                     weather_data = get_weather_data(city, request.LANGUAGE_CODE)
                     if str(weather_data.get('cod', "")) == '200':
                         weather_data.update({
                             "wind_direction": get_wind_direction(weather_data['wind']['deg'])
                         })
-                        cache.add(city, weather_data)
+                        cache.add(cache_key, weather_data)
                 else:
-                    weather_data = cache.get(city)
+                    weather_data = cache.get(cache_key)
             except:
                 weather_data.update({"cod":500, "msg":_("Internal Server Error! Please try later.")})
     else:
         form = InputForm()
-    print (weather_data)
     return render(request, 'cityweather/homepage.html', {'form': form, 'data': weather_data})
 
+def generate_cache_key(city, lang):
+    city = ' '.join(city.lower().split())
+    cache_key = f"{lang}-{city}".replace(" ", "-")
+    return city, cache_key
 
 def get_weather_data(city_name, lang):
     API_KEY = "8a7f5047848c86496d086cc4f1f243ba"
@@ -49,7 +53,6 @@ def get_weather_data(city_name, lang):
 
 
 def get_wind_direction(degree):
-    print (degree)
     if (degree > 337.5):
         return _('North')
     if (degree > 292.5):
